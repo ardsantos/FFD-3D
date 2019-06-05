@@ -32,144 +32,104 @@ def criar_objetos(lista):
     return lista1
 
 
-def criar_stripe():
+def criar_stripe(objs,cont,w):
     stripe = []
-    
-    return stripe        
-
-def criar_container(objs,objsAux,cont,idcont,saveorshow):
     realarea = 0
     virtualarea = 0
-    container = []
     h = 0
     n = 0
+    stripeWidth = 0
     line_highest_height = 0
     l_length = 0
     full = False
-
-
-def criar_container(objs,objsAux,cont,idcont,saveorshow):
-    realarea = 0
-    virtualarea = 0
-    container = []
-    h = 0
-    n = 0
-    line_highest_height = 0
-    l_length = 0
-    full = False
-    lines = []
-    line = "Container "+str(idcont)+"\n\n"
-    lines.append(line)
-    while len(objs) > 0 and not full:       
-        if l_length + objs[0].l <= cont.l and objs[0].h + h <= cont.h:
-            objs[0].position(l_length,h)
+    while len(objs) > 0 and not full:
+        if l_length + objs[0].l <= cont.l and objs[0].h + h <= cont.h and objs[0].w + w <= cont.w:
+            objs[0].position(l_length,w,h)
             l_length += objs[0].l
             current = objs.pop(0)
-            container.append(current)
+            stripe.append(current)
             n+=1
-            line = str(current.l)+" "+str(current.h)+" "+str(current.x)+" "+str(current.y)+"\n"
-            lines.append(line)
-            realarea += current.l * current.h
+            if current.w > stripeWidth:
+                stripeWidth = current.w
+            # realarea += current.l * current.h
         else:
             if(l_length < cont.l):
                 i = 1
                 while i < len(objs):
-                    if l_length + objs[i].l <= cont.l and objs[i].h <= container[line_highest_height].h:
-                        objs[i].position(l_length,h)
+                    if l_length + objs[i].l <= cont.l and objs[i].h + h <= cont.h and objs[i].w + w <= cont.w:
+                        objs[i].position(l_length,w,h)
                         l_length += objs[i].l
                         current = objs.pop(i)
-                        container.append(current)
+                        stripe.append(current)
                         n+=1
-                        line = str(current.l)+" "+str(current.h)+" "+str(current.x)+" "+str(current.y)+"\n"
-                        lines.append(line)
-                        realarea += current.l * current.h
+                        if current.w > stripeWidth:
+                            stripeWidth = current.w
+                        # realarea += current.l * current.h
                     else:
                         i+=1
                         
-                objec = 1
-                while objec:
-                    objec = roulette(objsAux, cont.l-l_length, container[line_highest_height].h)
-                    if(objec):
-                        objec.position(l_length,h)
-                        l_length += objec.l
-                        container.append(objec)
-                        n+=1
-                        line = str(objec.l)+" "+str(objec.h)+" "+str(objec.x)+" "+str(objec.y)+" (roleta)"+"\n"
-                        lines.append(line)
-                        virtualarea += objec.l * objec.h
+                # objec = 1
+                # while objec:
+                #     # objec = roulette(objsAux, cont.l-l_length, stripe[line_highest_height].h)
+                #     if(objec):
+                #         objec.position(l_length,w,h)
+                #         l_length += objec.l
+                #         stripe.append(objec)
+                #         n+=1
+                #         # virtualarea += objec.l * objec.h
 
-            h = container[line_highest_height].y + container[line_highest_height].h
+            h = stripe[line_highest_height].y + stripe[line_highest_height].h
             l_length = 0
             line_highest_height = n
-            if h + objs[0].h <= cont.h:             
-                objs[0].position(l_length,h)
+            if h + objs[0].h <= cont.h and objs[0].w + w <= cont.w:             
+                objs[0].position(l_length,w,h)
                 l_length += objs[0].l
                 current = objs.pop(0)
-                container.append(current)               
+                stripe.append(current)               
                 n+=1
-                line = str(current.l)+" "+str(current.h)+" "+str(current.x)+" "+str(current.y)+"\n"
-                lines.append(line)
-                realarea += current.l * current.h
+                if current.w > stripeWidth:
+                    stripeWidth = current.w
+                # realarea += current.l * current.h
             else:
                 i = 1
                 fits = False
                 while i < len(objs) and not fits:
-                    if h + objs[i].h <= cont.h:             
-                        objs[i].position(l_length,h)
+                    if h + objs[i].h <= cont.h and objs[i].w + w <= cont.w:             
+                        objs[i].position(l_length,w,h)
                         l_length += objs[i].l
                         current = objs.pop(i)
-                        container.append(current)               
+                        stripe.append(current)               
                         n+=1
                         fits = True
-                        line = str(current.l)+" "+str(current.h)+" "+str(current.x)+" "+str(current.y)+"\n"
-                        lines.append(line)
-                        realarea += current.l * current.h
+                        if current.w > stripeWidth:
+                            stripeWidth = current.w
+                        # realarea += current.l * current.h
                     else:
                         i+=1
-                if not fits:
-                    objec = roulette(objsAux, cont.l, cont.h-h)
-                    if(objec):
-                        objec.position(l_length,h)
-                        l_length += objec.l
-                        container.append(objec)
-                        n+=1
-                        line = str(objec.l)+" "+str(objec.h)+" "+str(objec.x)+" "+str(objec.y)+"\n"
-                        lines.append(line)
-                        virtualarea += objec.l * objec.h
-                    else:
-                        full = True
-    
-    while not full:
-        objec = roulette(objsAux, cont.l-l_length, container[line_highest_height].h)
-        if objec:
-            objec.position(l_length,h)
-            l_length += objec.l
-            container.append(objec)
-            n+=1
-            line = str(objec.l)+" "+str(objec.h)+" "+str(objec.x)+" "+str(objec.y)+" (roleta)"+"\n"
-            lines.append(line)
-            virtualarea += objec.l * objec.h
+                # if not fits:
+                #     objec = roulette(objsAux, cont.l, cont.h-h)
+                #     if(objec):
+                #         objec.position(l_length,w,h)
+                #         l_length += objec.l
+                #         stripe.append(objec)
+                #         n+=1
+                #         # virtualarea += objec.l * objec.h
+                #     else:
+                #         full = True    
+    return stripe, objs, stripeWidth     
 
-        else:
-            h = container[line_highest_height].y + container[line_highest_height].h
-            l_length = 0
-            line_highest_height = n
-            objec = roulette(objsAux, cont.l, cont.h-h)
-            if objec:               
-                objec.position(l_length,h)
-                l_length += objec.l
-                container.append(objec)
-                n+=1
-                line = str(objec.l)+" "+str(objec.h)+" "+str(objec.x)+" "+str(objec.y)+" (roleta)"+"\n"
-                lines.append(line)
-                virtualarea += objec.l * objec.h
-            else:
-                full = True
-            
-    lines.append("\n\n")
-    arq1.writelines(lines)
-    sobra = (cont.l * cont.h) - (realarea + virtualarea)
-    return container, objs, realarea, virtualarea, sobra
+def criar_container(objs,objsAux,cont,idcont,saveorshow):
+    container = []
+    w = 0
+    full = False
+    while objsAux and not full:
+        stripe,objsAux,stripeWidth = criar_stripe(objsAux,cont,w)
+        w += stripeWidth
+        container.append(stripe)
+        if not stripe:
+            full = True
+    return container,objsAux,0,0,0
+
 
 def criar_conjunto(objs,cont,saveorshow):
     objsAux = objs[:]
@@ -181,13 +141,13 @@ def criar_conjunto(objs,cont,saveorshow):
         i+=1
         container,restantes,realarea0,virtualarea0,sobra0 = criar_container(objs,objsAux,cont,i,saveorshow)
         conjunto.append(container)
-        realarea += realarea0
-        virtualarea += virtualarea0
-        sobra += sobra0
+        # realarea += realarea0
+        # virtualarea += virtualarea0
+        # sobra += sobra0
     return conjunto
 
 arq = open('objects.txt','r')
-arq1 = open('result.txt','w')
+# arq1 = open('result.txt','w')
 objs = arq.read().splitlines()
 arq.close()
 x = len(objs)
@@ -214,4 +174,9 @@ saveorshow = 3
 cont1 = Container(10,10,10)
 allconts = criar_conjunto(objs1,cont1,saveorshow)
 
-arq1.close()
+for i in allconts:
+    for j in i:
+        for k in j:
+            print(k.l,k.w,k.h, "Coords:", k.x,k.y,k.z)
+
+# arq1.close()
