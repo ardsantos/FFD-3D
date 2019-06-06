@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as ptc
 from random import *
 from decimal import Decimal
+from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+
 
 class Container:
     def __init__(self,l,w,h):
@@ -178,5 +181,90 @@ for i in allconts:
     for j in i:
         for k in j:
             print(k.l,k.w,k.h, "Coords:", k.x,k.y,k.z)
+
+# figure = plt.figure()
+# axis = figure.add_subplot(111, projection = '3d')
+
+# x = [1,2,3,4,5,6,7,8,9,10]
+# y = [5,6,7,8,2,5,6,3,7,2]
+# z = np.array([[1,2,6,3,2,7,3,3,7,2],[1,2,6,3,2,7,3,3,7,2]])
+
+# axis.plot_wireframe(x, y, z)
+
+# axis.set_xlabel('x-axis')
+# axis.set_ylabel('y-axis')
+# axis.set_zlabel('z-axis')
+
+# plt.show()
+
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+ax.set_aspect("equal")
+
+
+def x_y_edge(x_range, y_range, z_range):
+    xx, yy = np.meshgrid(x_range, y_range)
+
+    for value in [0, 1]:
+        ax.plot_wireframe(xx, yy, z_range[value], color="r")
+        ax.plot_surface(xx, yy, z_range[value], color="r", alpha=0.2)
+
+
+def y_z_edge(x_range, y_range, z_range):
+    yy, zz = np.meshgrid(y_range, z_range)
+
+    for value in [0, 1]:
+        ax.plot_wireframe(x_range[value], yy, zz, color="r")
+        ax.plot_surface(x_range[value], yy, zz, color="r", alpha=0.2)
+
+
+def x_z_edge(x_range, y_range, z_range):
+    xx, zz = np.meshgrid(x_range, z_range)
+
+    for value in [0, 1]:
+        ax.plot_wireframe(xx, y_range[value], zz, color="r")
+        ax.plot_surface(xx, y_range[value], zz, color="r", alpha=0.2)
+
+
+def rect_prism(x_range, y_range, z_range):
+    x_y_edge(x_range, y_range, z_range)
+    y_z_edge(x_range, y_range, z_range)
+    x_z_edge(x_range, y_range, z_range)
+
+
+rect_prism(np.array([-1, 1]),
+           np.array([-1, 1]),
+           np.array([-0.5, 0.5]))
+plt.show()
+
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+ax.set_aspect("equal")
+
+# draw cube
+def rect_prism(x_range, y_range, z_range):
+    # TODO: refactor this to use an iterator
+    xx, yy = np.meshgrid(x_range, y_range)
+    ax.plot_wireframe(xx, yy, z_range[0], color="r")
+    ax.plot_surface(xx, yy, z_range[0], color="r", alpha=0.2)
+    ax.plot_wireframe(xx, yy, z_range[1], color="r")
+    ax.plot_surface(xx, yy, z_range[1], color="r", alpha=0.2)
+
+
+    yy, zz = np.meshgrid(y_range, z_range)
+    ax.plot_wireframe(x_range[0], yy, zz, color="r")
+    ax.plot_surface(x_range[0], yy, zz, color="r", alpha=0.2)
+    ax.plot_wireframe(x_range[1], yy, zz, color="r")
+    ax.plot_surface(x_range[1], yy, zz, color="r", alpha=0.2)
+
+    xx, zz = np.meshgrid(x_range, z_range)
+    ax.plot_wireframe(xx, y_range[0], zz, color="r")
+    ax.plot_surface(xx, y_range[0], zz, color="r", alpha=0.2)
+    ax.plot_wireframe(xx, y_range[1], zz, color="r")
+    ax.plot_surface(xx, y_range[1], zz, color="r", alpha=0.2)
+
+
+rect_prism(np.array([-1, 1]), np.array([-1, 1]), np.array([-0.5, 0.5]))
+plt.show()
 
 # arq1.close()
